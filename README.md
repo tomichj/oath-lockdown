@@ -15,11 +15,10 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install authenticate2
+    $ gem install oath-ironclad
 
 ## Usage
 
-TODO: Write usage instructions here
 
 ## Development
 

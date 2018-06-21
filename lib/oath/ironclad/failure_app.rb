@@ -43,7 +43,7 @@ module Oath
       # cannot mark JSON as a navigational format).
       def http_auth?
         if request.xhr?
-          Authenticate2.config.http_authenticatable_on_xhr
+          Oath.config.http_authenticatable_on_xhr
         else
           !(request_format && is_navigational_format?)
         end
@@ -52,7 +52,7 @@ module Oath
       # It does not make sense to send authenticate headers in ajax requests
       # or if the user disabled them.
       def http_auth_header?
-        Authenticate2.config.http_authenticatable && !request.xhr?
+        Oath.config.http_authenticatable && !request.xhr?
       end
 
       def http_auth_body
