@@ -1,8 +1,9 @@
-require 'rails'
+require 'warden'
 require 'oath'
-
+require 'oath/ironclad/version'
 require 'oath/ironclad/configuration'
-require 'oath/ironclad/params_password_strategy'
+require 'oath/ironclad/lockable_password_strategy'
+require 'oath/ironclad/hooks/brute_force'
 
 
 module Oath

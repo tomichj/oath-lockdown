@@ -3,7 +3,7 @@ require 'warden'
 module Oath
   module Ironclad
     # Warden strategy to read passwords from session params.
-    class ParamsPasswordStrategy < ::Warden::Strategies::Base
+    class LockablePasswordStrategy < ::Warden::Strategies::Base
 
       # Checks if strategy should be executed
       # @return [Boolean]
@@ -15,10 +15,18 @@ module Oath
       def authenticate!
         user = Oath.config.user_class.find_by(lookup_field => lookup_field_value)
         auth = Oath.config.authentication_service.new(user, token_field_value)
-        auth.perform ? success!(user) : fail!("Could not log in")
+        if valid_for_auth?(user){ auth.perform }
+          success!(user)
+        else
+          fail!("Could not log in")
+        end
       end
 
       private
+
+      def valid_for_auth?(user, &block)
+        Adapters::BruteForce.valid_for_authentication? user, &block
+      end
 
       def lookup_field_value
         session_params[lookup_field]

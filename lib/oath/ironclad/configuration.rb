@@ -29,9 +29,8 @@ module Oath
         end
 
         def setup_warden_additions
-          # failure_app is defined in Oath::Configuration
           @failure_app = Oath::Ironclad::FailureApp
-          @session_authentication_strategy = Oath::Ironclad::ParamsPasswordStrategy
+          @session_authentication_strategy = Oath::Ironclad::LockablePasswordStrategy
         end
 
         def setup_brute_force
@@ -61,7 +60,6 @@ module Oath
 
           # Rename Oath::Configuration's initialize method and invoke it in our new initialize method.
           alias_method :initialize_original, :initialize
-          remove_method :initialize
 
           # Call Oath's
           def initialize
