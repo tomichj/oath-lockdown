@@ -28,11 +28,11 @@ end
 
 Warden::Manager.before_failure do |env, options|
   Rails.logger.info "!!!!!! hook: before_failure   event: #{options&.dig(:event)}"
-  Rails.logger.info "!!!!!! options: #{options.inspect}"
-  Rails.logger.info "!!!!!! env[PATH_INFO]: #{env['PATH_INFO'].inspect}"
-
-  params = Rack::Request.new(env).params
-  Rails.logger.info "!!!!! params: #{params.inspect}"
+  # Rails.logger.info "!!!!!! options: #{options.inspect}"
+  # Rails.logger.info "!!!!!! env[PATH_INFO]: #{env['PATH_INFO'].inspect}"
+  #
+  # params = Rack::Request.new(env).params
+  # Rails.logger.info "!!!!! params: #{params.inspect}"
   # Rails.logger.info "!!!!!! env: #{env.inspect}"
 end
 

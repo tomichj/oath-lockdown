@@ -6,6 +6,7 @@ require 'rspec/rails'
 require 'warden'
 require 'oath/ironclad'
 require 'capybara'
+require 'timecop'
 
 Oath.test_mode!
 Warden.test_mode!

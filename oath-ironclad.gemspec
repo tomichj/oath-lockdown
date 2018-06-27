@@ -31,4 +31,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'capybara'
   spec.add_development_dependency 'sqlite3'
   spec.add_development_dependency 'active_hash'
+  spec.add_development_dependency 'timecop'
 end
