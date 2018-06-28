@@ -4,6 +4,7 @@ require 'oath/ironclad/version'
 require 'oath/ironclad/configuration'
 require 'oath/ironclad/lockable_password_strategy'
 require 'oath/ironclad/hooks/brute_force'
+require 'oath/ironclad/hooks/lifetimed'
 require 'oath/ironclad/hooks/timeoutable'
 
 

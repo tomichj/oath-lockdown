@@ -1,27 +1,18 @@
 module Oath
   module Ironclad
     module Adapters
-      # Expire user sessions that have not been accessed within a certain period of time.
-      # Expired users will be asked for credentials again.
       #
-      # Timeoutable is enabled and configured with the `timeout_in` configuration parameter.
-      # Example:
-      #
-      #   Oath.configure do |config|
-      #     config.timeout_in = 15.minutes
-      #   end
-      #
-      # = Columns
-      # No columns are required on the user table.
+      # Set a maximum allowed lifespan on a user's session, after which the session is expired and requires
+      # re-authentication.
       #
       # = Configuration
-      # * timeout_in - maximum idle time allowed before session is invalidated. nil shuts off this feature.
+      # Set the maximum session lifetime in the initializer, giving a timestamp.
       #
-      # You must specify a non-nil timeout_in in your initializer to enable Timeoutable.
+      #   Authenticate.configure do |config|
+      #     config.max_session_lifetime = 8.hours
+      #   end
       #
-      # = Methods
-      # * timedout? - has this user timed out? @return[Boolean]
-      # * timeout_in - look up timeout period in config, @return [ActiveSupport::CoreExtensions::Numeric::Time]
+      # If the max_session_lifetime configuration parameter is nil, the lifetimed hook is not active.
       #
       class Lifetimed
         extend ActiveSupport::Concern
