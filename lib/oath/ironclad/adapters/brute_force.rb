@@ -6,7 +6,7 @@ module Oath
     module Adapters
       class BruteForce
 
-        # Called from authenicatio strategy.
+        # Called from authenication strategy.
         def self.valid_for_authentication?(user)
           lockable = BruteForce.new(user)
           return yield unless lockable.feature_enabled? && lockable.required_fields?
@@ -20,6 +20,7 @@ module Oath
           false
         end
 
+        # Called from authenication strategy.
         def self.clear_failed_logins(user)
           lockable = BruteForce.new(user)
           lockable.clear_failed_logins
