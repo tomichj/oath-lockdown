@@ -1,6 +1,6 @@
 module Oath
   module Ironclad
-    # oath-ironclad's configuration options.
+    # Oath::Ironclad's configuration options.
     # Options are injected into oath's Configuration class, and are accessed via Oath.configure.
     #
     # Example:
@@ -19,6 +19,7 @@ module Oath
         attr_accessor :session_authentication_strategy
         attr_accessor :max_consecutive_bad_logins_allowed, :bad_login_lockout_period
         attr_accessor :timeout_in, :max_session_lifetime
+
         attr_accessor :password_length
         attr_accessor :reset_password_within
 

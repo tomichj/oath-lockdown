@@ -4,8 +4,9 @@ module Oath
     # Authenticate adapters wrap a user instance
     #
     module Adapters
-      class BruteForce
 
+      # Detect brute force attempts and temporarily lock a user's account if needed.
+      class BruteForce
         # Called from authenication strategy.
         def self.valid_for_authentication?(user)
           lockable = BruteForce.new(user)
