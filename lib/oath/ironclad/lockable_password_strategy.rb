@@ -15,7 +15,7 @@ module Oath
       def authenticate!
         user = Oath.config.user_class.find_by(lookup_field => lookup_field_value)
         auth = Oath.config.authentication_service.new(user, token_field_value)
-        if valid_for_auth?(user){ auth.perform }
+        if valid_for_auth?(user) { auth.perform }
           success!(user)
         else
           fail!("Could not log in")
@@ -36,12 +36,10 @@ module Oath
         session_params[token_field]
       end
 
-      # :email
       def lookup_field
         Oath.config.user_lookup_field
       end
 
-      # :password
       def token_field
         Oath.config.user_token_field
       end

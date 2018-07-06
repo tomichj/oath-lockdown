@@ -1,4 +1,4 @@
-require "action_controller/metal"
+require 'action_controller/metal'
 
 module Oath
   module Ironclad

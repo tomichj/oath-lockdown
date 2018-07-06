@@ -22,7 +22,7 @@ Warden::Manager.after_set_user do |user, warden, options|
   if timeoutable.timedout?(last_request_at)
     warden.logout
     # todo set timeout message
-    throw :warden, message: :timeout
+    throw :warden, message: I18n.t('oath.ironclad.failure.timeout')
   end
 
   warden.session()['last_request_at'] = Time.current.utc.to_i

@@ -27,6 +27,7 @@ Warden::Manager.after_set_user do |user, warden, options|
   if lifetimed.lifetime_exceeded?(signed_in_at)
     warden.logout
     # todo set timeout message
-    throw :warden, message: :lifetimed
+    # throw :warden, message: :lifetimed
+    throw :warden, message: I18n.t('oath.ironclad.failure.lifetimed')
   end
 end

@@ -9,19 +9,18 @@ module Oath
     #   end
     #
     # TODO: document configuration options
-    # TODO: make ParamsPasswordStrategy a configuration option
     #
     class Configuration
       # oath-ironclad's configuration options.
       # The contents of this module will be injected into Oath::Configuration.
       module Options
         attr_accessor :http_authenticatable, :http_authenticatable_on_xhr, :http_authentication_realm
-        attr_accessor :session_authentication_strategy
+        attr_accessor :lockable_authentication_strategy
+
         attr_accessor :max_consecutive_bad_logins_allowed, :bad_login_lockout_period
         attr_accessor :timeout_in, :max_session_lifetime
 
-        attr_accessor :password_length
-        attr_accessor :reset_password_within
+        attr_accessor :track_user
 
         def setup_basic_authentication
           @http_authenticatable = false
@@ -30,8 +29,8 @@ module Oath
         end
 
         def setup_warden_additions
-          @failure_app = Oath::Ironclad::FailureApp
-          @session_authentication_strategy = Oath::Ironclad::LockablePasswordStrategy
+          @failure_app                      = Oath::Ironclad::FailureApp
+          @lockable_authentication_strategy = Oath::Ironclad::LockablePasswordStrategy
         end
 
         def setup_brute_force
@@ -47,9 +46,8 @@ module Oath
           @max_session_lifetime = nil
         end
 
-        def setup_password
-          @password_length = 8..128
-          @reset_password_within = 2.days
+        def setup_track_user
+          @track_user = false
         end
       end
 
@@ -70,7 +68,7 @@ module Oath
             setup_brute_force
             setup_timeout
             setup_lifetimed
-            setup_password
+            setup_track_user
           end
         end
 
@@ -82,7 +80,7 @@ module Oath
 
           def setup_warden_strategies
             setup_warden_strategies_original
-            Warden::Strategies.add(:session_authentication_strategy, Oath.config.session_authentication_strategy)
+            Warden::Strategies.add(:lockable_authentication_strategy, Oath.config.lockable_authentication_strategy)
           end
         end
       end
