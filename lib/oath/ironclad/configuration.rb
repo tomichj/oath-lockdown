@@ -28,11 +28,6 @@ module Oath
           @http_authentication_realm = 'Application'
         end
 
-        def setup_warden_additions
-          @failure_app                      = Oath::Ironclad::FailureApp
-          @lockable_authentication_strategy = Oath::Ironclad::LockablePasswordStrategy
-        end
-
         def setup_brute_force
           @max_consecutive_bad_logins_allowed = nil
           @bad_login_lockout_period = nil
@@ -48,6 +43,12 @@ module Oath
 
         def setup_track_user
           @track_user = false
+        end
+
+        def setup_warden_additions
+          @failure_app                      = Oath::Ironclad::FailureApp
+          @lockable_authentication_strategy = Oath::Ironclad::LockablePasswordStrategy
+          @warden_authentication_strategies << :oath_lockable
         end
       end
 
@@ -80,7 +81,7 @@ module Oath
 
           def setup_warden_strategies
             setup_warden_strategies_original
-            Warden::Strategies.add(:lockable_authentication_strategy, Oath.config.lockable_authentication_strategy)
+            Warden::Strategies.add(:oath_lockable, Oath.config.lockable_authentication_strategy)
           end
         end
       end
