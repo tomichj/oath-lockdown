@@ -5,7 +5,10 @@ Oath.configure do |config|
 
   config.max_consecutive_bad_logins_allowed = 4
   config.bad_login_lockout_period = 15.minutes
+
   config.timeout_in = 15.minutes
+
   config.max_session_lifetime = 8.hours
+
   config.track_user = false
 end

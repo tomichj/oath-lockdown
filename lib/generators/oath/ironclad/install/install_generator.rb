@@ -1,3 +1,6 @@
+require 'rails/generators/active_record'
+require 'generators/oath/ironclad/migration/version'
+
 module Oath
   module Ironclad
     class InstallGenerator < Rails::Generators::Base
@@ -10,9 +13,9 @@ module Oath
         template 'config/initializers/oath-ironclad.rb'
       end
 
-      def add_model
-        migration_template 'db/migrate/add_brute_force_to_user.rb', 'db/migrate/add_brute_force_to_user.rb', migration_version: migration_version
-        migration_template 'db/migrate/add_trackable_to_user.rb', 'db/migrate/add_trackable_to_user.rb', migration_version: migration_version
+      def add_model_extensions
+        migration_template 'db/migrate/add_brute_force_to_users.rb', 'db/migrate/add_brute_force_to_users.rb', migration_version: migration_version
+        migration_template 'db/migrate/add_trackable_to_users.rb', 'db/migrate/add_trackable_to_users.rb', migration_version: migration_version
       end
 
       def add_translations
