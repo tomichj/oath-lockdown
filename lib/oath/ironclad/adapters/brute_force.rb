@@ -21,6 +21,11 @@ module Oath
           false
         end
 
+        def self.locked?(user)
+          lockable = BruteForce.new(user)
+          lockable.locked?
+        end
+
         # Called from authenication strategy.
         def self.clear_failed_logins(user)
           lockable = BruteForce.new(user)

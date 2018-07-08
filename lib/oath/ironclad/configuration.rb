@@ -8,19 +8,71 @@ module Oath
     #     config.max_session_lifetime = 8.hours
     #   end
     #
-    # TODO: document configuration options
+    # TODO: document configuration options in readme?
     #
     class Configuration
       # oath-ironclad's configuration options.
       # The contents of this module will be injected into Oath::Configuration.
       module Options
+        # Number of consecutive bad login attempts allowed. Commonly called "brute force protection".
+        # The user's consecutive bad logins will be tracked, and if they exceed the allowed maximum,
+        # the user's account will be locked. The length of the lockout is determined by
+        # [#bad_login_lockout_period].
+        #
+        # Default is nil, which disables this feature.
+        #
+        #   Oath.configure do |config|
+        #     config.max_consecutive_bad_logins_allowed = 4
+        #     config.bad_login_lockout_period = 10.minutes
+        #   end
+        #
+        # @return [Integer]
+        attr_accessor :max_consecutive_bad_logins_allowed
+
+        # Time period to lock an account for if the user exceeds max_consecutive_bad_logins_allowed.
+        #
+        # If set to nil, account is locked out indefinitely.
+        #
+        # @return [ActiveSupport::CoreExtensions::Numeric::Time]
+        attr_accessor :bad_login_lockout_period
+
+        # Invalidate the session after the specified period of idle time.
+        #
+        # Defaults to nil, which is no idle timeout.
+        #
+        #   Oath.configure do |config|
+        #     config.timeout_in = 45.minutes
+        #   end
+        #
+        # @return [ActiveSupport::CoreExtensions::Numeric::Time]
+        attr_accessor :timeout_in
+
+        # Allow a session to live for no more than the given elapsed time, e.g. `8.hours`.
+        #
+        # Defaults to nil, or no max session time.
+        #
+        # If set, a user session will expire once it has been active for max_session_lifetime.
+        # The user session is invalidated and the next access will prompt the user for authentication.
+        #
+        #   Oath.configure do |config|
+        #     config.max_session_lifetime = 8.hours
+        #   end
+        #
+        # @return [ActiveSupport::CoreExtensions::Numeric::Time]
+        attr_accessor :max_session_lifetime
+
+        # Track the following for each user:
+        # * current_sign_in_at
+        # * current_sign_in_ip
+        # * last_sign_in_at
+        # * last_sign_in_ip
+        # * sign_in_count
+        #
+        # Defaults to false, which disables tracking.
+        attr_accessor :track_user
+
         attr_accessor :http_authenticatable, :http_authenticatable_on_xhr, :http_authentication_realm
         attr_accessor :lockable_authentication_strategy
-
-        attr_accessor :max_consecutive_bad_logins_allowed, :bad_login_lockout_period
-        attr_accessor :timeout_in, :max_session_lifetime
-
-        attr_accessor :track_user
 
         def setup_basic_authentication
           @http_authenticatable = false

@@ -18,7 +18,16 @@ module Oath
         if valid_for_auth?(user) { auth.perform }
           success!(user)
         else
-          fail!("Could not log in")
+          # TODO fail messages
+          # if locked, give locked message
+          if Adapters::BruteForce.locked? user
+            fail! t('oath.ironclad.failure.locked')
+          else
+            fail! t('oath.ironclad.failure.could_not_log_in')
+          end
+          # last attempt warning?
+          # else, could not log in
+
         end
       end
 

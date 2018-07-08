@@ -7,6 +7,7 @@ en:
   oath:
     ironclad:
       failure:
+        could_not_login: "Could not log in."
         locked: "Your account is locked."
         last_attempt: "You have one more attempt before your account is locked."
         timeout: "Your session expired. Please sign in again to continue."
