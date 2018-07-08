@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
 
   def create
     # user = authenticate_session(session_params)
-    user = warden.authenticate(:lockable_authentication_strategy)
+    user = warden.authenticate(:oath_lockable)
 
     if sign_in(user)
       redirect_to posts_path

@@ -1,4 +1,4 @@
-class AddAuthenticateBruteForceToUsers < ActiveRecord::Migration<%= migration_version %>
+class AddTrackableToUsers < ActiveRecord::Migration<%= migration_version %>
   def change
     add_column :users, :current_sign_in_at, :datetime, default: nil
     add_column :users, :current_sign_in_ip, :string, default: nil, limit: 128

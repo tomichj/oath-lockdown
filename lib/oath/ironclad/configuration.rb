@@ -71,6 +71,13 @@ module Oath
         # Defaults to false, which disables tracking.
         attr_accessor :track_user
 
+        # Rotate CSRF token on sign in if true.
+        #
+        # Defaults to true.
+        #
+        # @return [Boolean]
+        attr_accessor :rotate_csrf_on_sign_in
+
         attr_accessor :http_authenticatable, :http_authenticatable_on_xhr, :http_authentication_realm
         attr_accessor :lockable_authentication_strategy
 
@@ -97,6 +104,10 @@ module Oath
           @track_user = false
         end
 
+        def setup_csrf_rotation
+          @rotate_csrf_on_sign_in = true
+        end
+
         def setup_warden_additions
           @failure_app                      = Oath::Ironclad::FailureApp
           @lockable_authentication_strategy = Oath::Ironclad::LockablePasswordStrategy
@@ -117,6 +128,7 @@ module Oath
           def initialize
             initialize_original
             setup_basic_authentication
+            setup_csrf_rotation
             setup_warden_additions
             setup_brute_force
             setup_timeout

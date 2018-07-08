@@ -21,9 +21,9 @@ module Oath
           # TODO fail messages
           # if locked, give locked message
           if Adapters::BruteForce.locked? user
-            fail! t('oath.ironclad.failure.locked')
+            fail! I18n.t('oath.ironclad.failure.locked')
           else
-            fail! t('oath.ironclad.failure.could_not_log_in')
+            fail! I18n.t('oath.ironclad.failure.could_not_log_in')
           end
           # last attempt warning?
           # else, could not log in
