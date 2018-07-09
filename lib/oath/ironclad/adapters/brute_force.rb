@@ -11,9 +11,8 @@ module Oath
         def self.valid_for_authentication?(user)
           lockable = BruteForce.new(user)
           return yield unless lockable.feature_enabled? && lockable.required_fields?
-
           lockable.unlock! if lockable.lock_expired?
-          return true if (yield && (!lockable.locked?))
+          return true if yield && lockable.unlocked?
 
           lockable.register_failed_login!
           lockable.lock! if lockable.attempts_exceeded? && lockable.unlocked?
@@ -37,15 +36,15 @@ module Oath
         end
 
         def feature_enabled?
-          !max_bad_logins.nil?
+          !max_bad_logins.nil? && max_bad_logins > 0
         end
 
         def required_fields?
-          user.respond_to?(:failed_logins_count) && user.respond_to?(:lock_expires_at)
+          user.respond_to?(:failed_logins_count) && user.respond_to?(:locked_at)
         end
 
         def clear_failed_logins
-          user.update_attribute(:failed_logins_count, 0) unless user.failed_logins_count.to_i.zero?
+          user.update_attribute(:failed_logins_count, 0) unless user.failed_logins_count && user.failed_logins_count.to_i.zero?
         end
 
         def register_failed_login!
@@ -54,11 +53,11 @@ module Oath
         end
 
         def lock!
-          user.update_attribute(:lock_expires_at, Time.current.utc + lockout_period)
+          user.update_attribute(:locked_at, Time.current.utc)
         end
 
         def unlock!
-          user.update_attributes(failed_logins_count: 0, lock_expires_at: nil)
+          user.update_attributes(failed_logins_count: 0, locked_at: nil)
         end
 
         def locked?
@@ -66,11 +65,12 @@ module Oath
         end
 
         def unlocked? # check if lock is expired
-          user.lock_expires_at.nil? || user.lock_expires_at < Time.current.utc
+          user.locked_at.nil? || lock_expired?
         end
 
         def lock_expired?
-          user.lock_expires_at && user.lock_expires_at < Time.current.utc
+          return false unless lockout_period
+          user.locked_at && user.locked_at < (Time.current.utc - lockout_period)
         end
 
         def attempts_exceeded?

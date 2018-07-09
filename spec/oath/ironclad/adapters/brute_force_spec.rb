@@ -5,7 +5,7 @@ describe Oath::Ironclad::Adapters::BruteForce do
   describe '#valid?' do
     context 'with valid user attributes' do
       it 'is valid' do
-        user = double(lock_expires_at: nil, failed_logins_count: 0)
+        user = double(locked_at: nil, failed_logins_count: 0)
         bf_adapter = Oath::Ironclad::Adapters::BruteForce.new(user)
         expect(bf_adapter).to be_required_fields
       end
@@ -43,23 +43,25 @@ describe Oath::Ironclad::Adapters::BruteForce do
   end
 
   describe '#unlocked?' do
-    context 'with nil lock_expires_at' do
+    context 'with nil locked_at' do
       it 'is not locked' do
-        user = User.new lock_expires_at: nil
+        user = User.new locked_at: nil
         bf_adapter = Oath::Ironclad::Adapters::BruteForce.new(user)
         expect(bf_adapter.unlocked?).to be_truthy
       end
     end
     context 'with lock_expires_at in the past' do
       it 'is not locked' do
-        user = User.new lock_expires_at: Time.current.utc - 10.minutes
-        bf_adapter = Oath::Ironclad::Adapters::BruteForce.new(user)
-        expect(bf_adapter.unlocked?).to be_truthy
+        with_oath_config(bad_login_lockout_period: 10.minutes) do
+          user = User.new locked_at: Time.current.utc - 20.minutes
+          bf_adapter = Oath::Ironclad::Adapters::BruteForce.new(user)
+          expect(bf_adapter.unlocked?).to be_truthy
+        end
       end
     end
     context 'with lock_expires_at in the future' do
       it 'is not locked' do
-        user = User.new lock_expires_at: Time.current.utc + 10.minutes
+        user = User.new locked_at: Time.current.utc + 10.minutes
         bf_adapter = Oath::Ironclad::Adapters::BruteForce.new(user)
         expect(bf_adapter.unlocked?).to be_falsey
       end
@@ -69,8 +71,8 @@ describe Oath::Ironclad::Adapters::BruteForce do
   describe '#locked?' do
     context 'when user is locked' do
       it 'reports lock' do
-        with_oath_config(max_consecutive_bad_logins_allowed: 1, bad_login_lockout_period: 5.minute) do
-          user = User.new lock_expires_at: Time.current.utc + 20.minutes, failed_logins_count: 4
+        with_oath_config(max_consecutive_bad_logins_allowed: 1, bad_login_lockout_period: 50.minute) do
+          user = User.new locked_at: Time.current.utc - 1.minutes, failed_logins_count: 4
           bf_adapter = Oath::Ironclad::Adapters::BruteForce.new(user)
           expect(bf_adapter.locked?).to be_truthy
         end
@@ -79,7 +81,7 @@ describe Oath::Ironclad::Adapters::BruteForce do
     context 'when user is not locked' do
       it 'reports lock' do
         with_oath_config(max_consecutive_bad_logins_allowed: 1, bad_login_lockout_period: 5.minute) do
-          user = User.new lock_expires_at: nil, failed_logins_count: nil
+          user = User.new locked_at: nil, failed_logins_count: nil
           bf_adapter = Oath::Ironclad::Adapters::BruteForce.new(user)
           expect(bf_adapter.locked?).to be_falsey
         end
@@ -91,10 +93,10 @@ describe Oath::Ironclad::Adapters::BruteForce do
     context 'when user is locked' do
       it 'resets lock attributes' do
         with_oath_config(max_consecutive_bad_logins_allowed: 1, bad_login_lockout_period: 5.minute) do
-          user = User.new lock_expires_at: Time.current.utc + 20.minutes, failed_logins_count: 4
+          user = User.new locked_at: Time.current.utc, failed_logins_count: 4
           bf_adapter = Oath::Ironclad::Adapters::BruteForce.new(user)
           bf_adapter.unlock!
-          expect(user.lock_expires_at).to be_nil
+          expect(user.locked_at).to be_nil
           expect(user.failed_logins_count).to eq 0
         end
       end
@@ -102,10 +104,10 @@ describe Oath::Ironclad::Adapters::BruteForce do
     context 'when user is not locked' do
       it 'resets lock attributes' do
         with_oath_config(max_consecutive_bad_logins_allowed: 2, bad_login_lockout_period: 5.minute) do
-          user = User.new lock_expires_at: nil, failed_logins_count: 0
+          user = User.new locked_at: nil, failed_logins_count: 0
           bf_adapter = Oath::Ironclad::Adapters::BruteForce.new(user)
           bf_adapter.unlock!
-          expect(user.lock_expires_at).to be_nil
+          expect(user.locked_at).to be_nil
           expect(user.failed_logins_count).to eq 0
         end
       end

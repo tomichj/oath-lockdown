@@ -5,7 +5,7 @@ class User < ActiveHash::Base
   include ActiveModel::Validations
 
   # attr_accessor :lock_expires_at, :failed_logins_count
-  field :lock_expires_at
+  field :locked_at
   field :failed_logins_count
   attr_accessor :email, :password_digest, :password
   validates :email, presence: true

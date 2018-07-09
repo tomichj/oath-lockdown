@@ -13,7 +13,7 @@ module Oath
         template 'config/initializers/oath-ironclad.rb'
       end
 
-      def add_model_extensions
+      def add_model_migrations
         migration_template 'db/migrate/add_brute_force_to_users.rb', 'db/migrate/add_brute_force_to_users.rb', migration_version: migration_version
         migration_template 'db/migrate/add_trackable_to_users.rb', 'db/migrate/add_trackable_to_users.rb', migration_version: migration_version
       end
