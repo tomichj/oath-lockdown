@@ -19,9 +19,10 @@ Warden::Manager.after_set_user do |user, warden, options|
     last_request_at = Time.parse(last_request_at)
   end
 
-  if timeoutable.timedout?(last_request_at)
+  proxy = Oath::Ironclad::Controllers::Proxy.new warden
+
+  if timeoutable.timedout?(last_request_at) && !proxy.remember_me_is_active?(user)
     warden.logout
-    # todo set timeout message
     throw :warden, message: I18n.t('oath.ironclad.failure.timeout')
   end
 

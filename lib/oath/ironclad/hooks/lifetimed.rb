@@ -24,10 +24,10 @@ Warden::Manager.after_set_user do |user, warden, options|
     signed_in_at = Time.parse(signed_in_at)
   end
 
-  if lifetimed.lifetime_exceeded?(signed_in_at)
+  proxy = Oath::Ironclad::Controllers::Proxy.new(warden)
+
+  if lifetimed.lifetime_exceeded?(signed_in_at) && !proxy.remember_me_is_active?(user)
     warden.logout
-    # todo set timeout message
-    # throw :warden, message: :lifetimed
     throw :warden, message: I18n.t('oath.ironclad.failure.lifetimed')
   end
 end

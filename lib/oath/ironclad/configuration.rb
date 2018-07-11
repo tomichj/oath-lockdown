@@ -78,8 +78,29 @@ module Oath
         # @return [Boolean]
         attr_accessor :rotate_csrf_on_sign_in
 
-        attr_accessor :http_authenticatable, :http_authenticatable_on_xhr, :http_authentication_realm
-        attr_accessor :lockable_authentication_strategy
+        # The time the user will be remembered without asking for credentials again.
+        #
+        # Defaults to nil. Set to a period of time to enable remembering.
+        #
+        # @return [ActiveSupport::CoreExtensions::Numeric::Time]
+        attr_accessor :remember_for
+
+        # The name of the "remember me" cookie.
+        attr_accessor :remember_cookie_name
+
+        # If true, all the remember me tokens are going to be invalidated when the user signs out.
+        attr_accessor :expire_remember_me_on_sign_out
+
+        # If http authentication is enabled by default.
+        attr_accessor :http_authenticatable
+
+        # If http headers should be returned for ajax requests. True by default.
+        attr_accessor :http_authenticatable_on_xhr
+
+        # The realm used in Http Basic Authentication.
+        attr_accessor :http_authentication_realm
+
+        attr_accessor :remember_me_authentication_strategy, :lockable_authentication_strategy
 
         def setup_basic_authentication
           @http_authenticatable = false
@@ -109,9 +130,17 @@ module Oath
         end
 
         def setup_warden_additions
-          @failure_app                      = Oath::Ironclad::FailureApp
-          @lockable_authentication_strategy = Oath::Ironclad::LockablePasswordStrategy
-          @warden_authentication_strategies << :oath_lockable
+          @failure_app                         = Oath::Ironclad::FailureApp
+          @lockable_authentication_strategy    = Oath::Ironclad::Strategies::LockablePasswordStrategy
+          @remember_me_authentication_strategy = Oath::Ironclad::Strategies::RememberMeStrategy
+          @warden_authentication_strategies    = [:oath_remember_me, :oath_lockable, :oath]
+        end
+
+        def setup_rememberable
+          @rememberable                   = true
+          @remember_for                   = 2.weeks
+          @remember_cookie_name           = 'remember_user_key'
+          @expire_remember_me_on_sign_out = true
         end
       end
 
@@ -134,6 +163,7 @@ module Oath
             setup_timeout
             setup_lifetimed
             setup_track_user
+            setup_rememberable
           end
         end
 
@@ -145,7 +175,8 @@ module Oath
 
           def setup_warden_strategies
             setup_warden_strategies_original
-            Warden::Strategies.add(:oath_lockable, Oath.config.lockable_authentication_strategy)
+            Warden::Strategies.add :oath_lockable, Oath.config.lockable_authentication_strategy
+            Warden::Strategies.add :oath_remember_me, Oath.config.remember_me_authentication_strategy
           end
         end
       end
