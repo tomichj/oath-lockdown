@@ -1,8 +1,14 @@
-# Oath::Ironclad
+# Oath::Lockdown
 
-An authentication system built on top of the [Oath](https://github.com/halogenandtoast/oath) authentication library.
+An authentication system for Rails built on [Oath].
 
-Oath-ironclad provides Oath with new warden hooks and strategies. 
+[Oath] is fantastic. `Oath::Lockdown` enhances Oath, adding features to provide:
+* "remember me"
+* brute force penentration detection
+* session timeout
+* session max lifetime
+* basic auditing/tracking
+* csrf rotation on signon
 
 ## Installation
 
@@ -10,7 +16,7 @@ Oath-ironclad provides Oath with new warden hooks and strategies.
 
 Add this line to your application's Gemfile:
 
-    gem 'oath-ironclad'
+    gem 'oath-lockdown'
 
 And then execute:
 
@@ -18,13 +24,13 @@ And then execute:
 
 ### Use The Install Generator
 
-Install oath-ironclad with the install generator:
+Use the install generator:
 
-    rails g oath:ironclad:install
+    rails g oath:lockdown:install
 
 This will install:
-* localization in english at `app/config/locales/oath.ironclad.en.yml`
-* an initializer at `app/config/initializers/oath-ironclad.rb` with all values commented out.
+* localization in english at `app/config/locales/oath.lockdown.en.yml`
+* an initializer at `app/config/initializers/oath-lockdown.rb` with all values commented out.
 * database migrations for the user table, adding columns for: brute force, tracking, and rememberable
 ** if you won't be using any of those features, you can remove the migration
 
@@ -35,16 +41,19 @@ Now apply the migrations:
 ### Tweak the configuration
 
 The config parameters you'll typically want to tweak are already enumerated in 
-`app/config/initializers/oath-ironclad.rb`. Open it up and tweak the settings.
+`app/config/initializers/oath-lockdown.rb`. Open it up and tweak the settings.
 
-Configuration parameters are described in detail here: [Configuration](lib/oath/ironclad/configuration.rb)
+Configuration parameters are described in detail here: [Configuration](lib/oath/lockdown/configuration.rb)
 
 
 
 ## Contributing
 
-1. [Fork it](http://github.com/tomichj/oath-ironclad/fork)
+1. [Fork it](http://github.com/tomichj/oath-lockdown/fork)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+
+[Oath]: https://github.com/halogenandtoast/oath

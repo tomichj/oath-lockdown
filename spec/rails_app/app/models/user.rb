@@ -1,5 +1,5 @@
 require 'active_hash'
-require 'oath/ironclad/adapters/brute_force'
+require 'oath/lockdown/adapters/brute_force'
 
 class User < ActiveHash::Base
   include ActiveModel::Validations

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-RSpec.describe Oath::Ironclad do
+RSpec.describe Oath::Lockdown do
   it 'has a version number' do
-    expect(Oath::Ironclad::VERSION).not_to be nil
+    expect(Oath::Lockdown::VERSION).not_to be nil
   end
 end

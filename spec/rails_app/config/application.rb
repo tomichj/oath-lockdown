@@ -15,7 +15,7 @@ if defined?(Bundler)
   # Bundler.require(:default, :assets, Rails.env)
 end
 
-require 'oath/ironclad'
+require 'oath/lockdown'
 
 module RailsApp
   class Application < Rails::Application

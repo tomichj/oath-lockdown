@@ -1,17 +1,17 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'oath/ironclad/version'
+require 'oath/lockdown/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "oath-ironclad"
-  spec.version       = Oath::Ironclad::VERSION
+  spec.name          = "oath-lockdown"
+  spec.version       = Oath::Lockdown::VERSION
   spec.authors       = ["Justin Tomich"]
   spec.email         = ["tomichj@gmail.com"]
 
   spec.summary       = %q{Enhancements to Oath, an authentication toolset}
   spec.description   = %q{Enhancements to Oath, an authentication toolset}
-  spec.homepage      = "https://github.com/tomichj/oath-ironclad"
+  spec.homepage      = "https://github.com/tomichj/oath-lockdown"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
