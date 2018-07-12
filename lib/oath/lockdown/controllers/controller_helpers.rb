@@ -2,7 +2,7 @@ module Oath
   module Lockdown
     module ControllerHelpers
       # Helper for use in before_actions where no authentication is required.
-      # 
+      #
       # If the user has a remember_me token, it will be used to seamlessly authenticate the user.
       #
       # Example:
