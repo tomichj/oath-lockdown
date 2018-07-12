@@ -18,7 +18,6 @@ module Oath
           auth = Oath.config.authentication_service.new(user, token_field_value)
 
           if valid_for_auth?(user) { auth.perform }
-            # if remember_me is set in the request, do it.
             remember_me(user) if remember_me?
             success!(user)
           elsif locked?(user)
@@ -40,7 +39,7 @@ module Oath
         end
 
         def remember_me(user)
-          Oath::Lockdown::Controllers::Proxy.new(@env['warden']).rememeber_me(user)
+          Oath::Lockdown::Rememberable.new(@env['warden']).rememeber_me(user)
         end
 
         def remember_me?

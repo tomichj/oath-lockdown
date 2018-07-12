@@ -22,7 +22,7 @@ Warden::Manager.after_set_user do |user, warden, options|
     last_request_at = Time.parse(last_request_at)
   end
 
-  proxy = Oath::Lockdown::Controllers::Proxy.new warden
+  proxy = Oath::Lockdown::Rememberable.new warden
 
   if timeoutable.timedout?(last_request_at) && !proxy.remember_me_is_active?(user)
     warden.logout

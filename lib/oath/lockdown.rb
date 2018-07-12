@@ -11,9 +11,8 @@ require 'oath/lockdown/hooks/timeoutable'
 require 'oath/lockdown/hooks/trackable'
 require 'oath/lockdown/hooks/remember_me'
 require 'oath/lockdown/adapters/remember_me'
-require 'oath/lockdown/controllers/proxy'
-require 'oath/lockdown/controllers/remember_me_helpers'
-require 'oath/lockdown/controllers/controller_helpers'
+require 'oath/lockdown/controller_helpers'
+require 'oath/lockdown/rememberable'
 
 module Oath
   module Lockdown
@@ -24,5 +23,19 @@ module Oath
 
     # True values used to check params
     TRUE_VALUES = [true, 1, '1', 't', 'T', 'true', 'TRUE']
+
+    def self.serialize_from_cookie(*args)
+      id, token, generated_at = *args
+
+      user = Oath.config.warden_serialize_from_session.call(id)
+      rememberable = Oath::Lockdown::Adapters::RememberMe.new user
+      user if user && rememberable.remembered?(token, generated_at)
+    end
+
+    def self.serialize_into_cookie(user)
+      id = Oath.config.warden_serialize_into_session.call(user)
+      [id, user.remember_token, Time.current.utc.to_f.to_s]
+    end
+
   end
 end

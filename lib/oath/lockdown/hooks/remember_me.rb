@@ -3,5 +3,6 @@
 # remembered again. Notice that we forget the user unless the record is not persisted.
 # This avoids forgetting deleted users.
 Warden::Manager.before_logout do |record, warden, options|
-  Oath::Lockdown::Controllers::Proxy.new(warden).forget_me(record)
+  puts 'DOING LOG OUT'
+  Oath::Lockdown::Rememberable.new(warden).forget_me(record)
 end

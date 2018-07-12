@@ -14,10 +14,10 @@ module Oath
       # oath-lockdown's configuration options.
       # The contents of this module will be injected into Oath::Configuration.
       module Options
-        # Number of consecutive bad login attempts allowed. Commonly called "brute force protection".
-        # The user's consecutive bad logins will be tracked, and if they exceed the allowed maximum,
-        # the user's account will be locked. The length of the lockout is determined by
-        # [#bad_login_lockout_period].
+        # Number of consecutive bad login attempts allowed.
+        # If the user exceed sthe allowed maximum, the user's
+        # account will be locked. The length of the lockout is
+        # determined by [#bad_login_lockout_period].
         #
         # Default is nil, which disables this feature.
         #
@@ -31,7 +31,7 @@ module Oath
 
         # Time period to lock an account for if the user exceeds max_consecutive_bad_logins_allowed.
         #
-        # If set to nil, account is locked out indefinitely.
+        # If set to nil, the user is locked out indefinitely.
         #
         # @return [ActiveSupport::CoreExtensions::Numeric::Time]
         attr_accessor :bad_login_lockout_period
@@ -62,16 +62,16 @@ module Oath
         attr_accessor :max_session_lifetime
 
         # Track the following for each user:
-        # * current_sign_in_at
-        # * current_sign_in_ip
-        # * last_sign_in_at
-        # * last_sign_in_ip
-        # * sign_in_count
+        #   * current_sign_in_at
+        #   * current_sign_in_ip
+        #   * last_sign_in_at
+        #   * last_sign_in_ip
+        #   * sign_in_count
         #
         # Defaults to false, which disables tracking.
         attr_accessor :track_user
 
-        # Rotate CSRF token on sign in if true.
+        # Rotate CSRF token on sign in, if true.
         #
         # Defaults to true.
         #
@@ -86,18 +86,30 @@ module Oath
         attr_accessor :remember_for
 
         # The name of the "remember me" cookie.
+        #
+        # @return [String]
         attr_accessor :remember_cookie_name
 
         # If true, all the remember me tokens are going to be invalidated when the user signs out.
+        #
+        # @return [Boolean]
         attr_accessor :expire_remember_me_on_sign_out
 
         # If http authentication is enabled by default.
+        #
+        # @return [Boolean]
         attr_accessor :http_authenticatable
 
         # If http headers should be returned for ajax requests. True by default.
+        #
+        # @return [Boolean]
         attr_accessor :http_authenticatable_on_xhr
 
         # The realm used in Http Basic Authentication.
+        #
+        # Defaults to 'Application'.
+        #
+        # @return [String]
         attr_accessor :http_authentication_realm
 
         attr_accessor :remember_me_authentication_strategy, :lockable_authentication_strategy
@@ -129,6 +141,7 @@ module Oath
           @rotate_csrf_on_sign_in = true
         end
 
+        # failure_app and warden_authentication_strategies are declared in Oath's configuration.
         def setup_warden_additions
           @failure_app                         = Oath::Lockdown::FailureApp
           @lockable_authentication_strategy    = Oath::Lockdown::Strategies::LockablePasswordStrategy

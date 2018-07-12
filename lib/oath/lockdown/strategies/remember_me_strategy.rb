@@ -1,12 +1,10 @@
 require 'warden'
-require 'oath/lockdown/controllers/remember_me_helpers'
 
 module Oath
   module Lockdown
     module Strategies
       # Warden strategy to read passwords from session params.
       class RememberMeStrategy < ::Warden::Strategies::Base
-        include Oath::Lockdown::Controllers::RememberMeHelpers
 
         # Checks if strategy should be executed
         # @return [Boolean]
@@ -17,7 +15,7 @@ module Oath
 
         # Authenticates for warden
         def authenticate!
-          user = serialize_from_cookie(remember_cookie)
+          user = Oath::Lockdown.serialize_from_cookie(remember_cookie)
 
           if user
             success!(user)
@@ -44,11 +42,6 @@ module Oath
 
         def remember_key
           Oath.config.remember_cookie_name
-        end
-
-        def cookies
-          req = ActionDispatch::Request.new(env)
-          req.cookie_jar
         end
       end
     end

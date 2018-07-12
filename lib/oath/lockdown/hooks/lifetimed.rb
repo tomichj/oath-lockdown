@@ -24,7 +24,7 @@ Warden::Manager.after_set_user do |user, warden, options|
     signed_in_at = Time.parse(signed_in_at)
   end
 
-  proxy = Oath::Lockdown::Controllers::Proxy.new(warden)
+  proxy = Oath::Lockdown::Rememberable.new(warden)
 
   if lifetimed.lifetime_exceeded?(signed_in_at) && !proxy.remember_me_is_active?(user)
     warden.logout
