@@ -50,6 +50,10 @@ module Oath
           options
         end
 
+        def forget_cookie_values(user)
+          cookie_values
+        end
+
         def cookie_values
           Rails.configuration.session_options.slice(:path, :domain, :secure) || {}
         end
