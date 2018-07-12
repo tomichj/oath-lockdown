@@ -113,6 +113,7 @@ module Oath
         attr_accessor :http_authentication_realm
 
         attr_accessor :remember_me_authentication_strategy, :lockable_authentication_strategy
+        attr_accessor :warden_no_input_authentication_strategies
 
         def setup_basic_authentication
           @http_authenticatable = false
@@ -143,10 +144,11 @@ module Oath
 
         # failure_app and warden_authentication_strategies are declared in Oath's configuration.
         def setup_warden_additions
-          @failure_app                         = Oath::Lockdown::FailureApp
-          @lockable_authentication_strategy    = Oath::Lockdown::Strategies::LockablePasswordStrategy
-          @remember_me_authentication_strategy = Oath::Lockdown::Strategies::RememberMeStrategy
-          @warden_authentication_strategies    = [:oath_remember_me, :oath_lockable, :oath]
+          @failure_app                               = Oath::Lockdown::FailureApp
+          @lockable_authentication_strategy          = Oath::Lockdown::Strategies::LockablePasswordStrategy
+          @remember_me_authentication_strategy       = Oath::Lockdown::Strategies::RememberMeStrategy
+          @warden_authentication_strategies          = [:oath_remember_me, :oath_lockable, :oath]
+          @warden_no_input_authentication_strategies = [:oath_remember_me]
         end
 
         def setup_rememberable

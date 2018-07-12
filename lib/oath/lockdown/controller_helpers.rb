@@ -10,7 +10,7 @@ module Oath
       #
       def require_no_authentication
         # return unless is_navigational_format?
-        if warden.authenticate?(:oath_remember_me) && warden.user
+        if warden.authenticate?(*Oath.config.warden_no_input_authentication_strategies) && warden.user
           flash[:alert] = I18n.t("oath.lockdown.failures.already_authenticated")
           redirect_to root_path
         end
