@@ -2,13 +2,15 @@
 
 An authentication system for Rails built on [Oath].
 
-[Oath] is fantastic. `Oath::Lockdown` enhances Oath, adding features to provide:
-* "remember me"
-* brute force penentration detection
-* session timeout
+[Oath] is a fantastic authorization toolkit. `Oath::Lockdown` enhances Oath, adding:
+
+* "remember me" capabilities
+* brute force penetration detection
+* session idle timeout
 * session max lifetime
 * basic auditing/tracking
 * csrf rotation on signon
+
 
 ## Installation
 
@@ -29,8 +31,8 @@ Use the install generator:
     rails g oath:lockdown:install
 
 This will install:
+* an initializer at `app/config/initializers/oath-lockdown.rb`
 * localization in english at `app/config/locales/oath.lockdown.en.yml`
-* an initializer at `app/config/initializers/oath-lockdown.rb` with all values commented out.
 * database migrations for the user table, adding columns for: brute force, tracking, and rememberable
 ** if you won't be using any of those features, you can remove the migration
 
@@ -44,7 +46,6 @@ The config parameters you'll typically want to tweak are already enumerated in
 `app/config/initializers/oath-lockdown.rb`. Open it up and tweak the settings.
 
 Configuration parameters are described in detail here: [Configuration](lib/oath/lockdown/configuration.rb)
-
 
 
 ## Contributing
