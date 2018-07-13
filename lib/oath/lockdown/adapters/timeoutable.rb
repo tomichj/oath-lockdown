@@ -28,10 +28,6 @@ module Oath
           @user = user
         end
 
-        def required_fields?
-          true
-        end
-
         def feature_enabled?
           !timeout_in.nil?
         end

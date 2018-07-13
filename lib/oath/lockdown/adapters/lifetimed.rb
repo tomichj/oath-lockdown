@@ -19,10 +19,6 @@ module Oath
           @user = user
         end
 
-        def required_fields?
-          true
-        end
-
         def feature_enabled?
           !max_session_lifetime.nil?
         end

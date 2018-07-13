@@ -12,22 +12,22 @@ module Oath
       end
 
       # Remembers the given user by setting up a cookie.
-      def rememeber_me(user)
-        rememberable = Oath::Lockdown::Adapters::RememberMe.new user
+      def remember_me(user)
+        rememberable = create_adapter(user)
         rememberable.remember_me!
         cookies.signed[remember_key] = remember_cookie_values(user)
       end
 
       # Forgets the given resource by deleting a cookie.
       def forget_me(user)
-        rememberable = Oath::Lockdown::Adapters::RememberMe.new user
+        rememberable = create_adapter(user)
         rememberable.forget_me!
         cookies.delete(remember_key, forget_cookie_values(user))
       end
 
       def remember_me_is_active?(user)
         _, token, generated_at = cookies.signed[remember_key]
-        rememberable = Oath::Lockdown::Adapters::RememberMe.new user
+        rememberable = create_adapter(user)
         rememberable.remembered?(token, generated_at)
       end
 
@@ -45,7 +45,7 @@ module Oath
         options
       end
 
-      def forget_cookie_values(user)
+      def forget_cookie_values(_user)
         base_cookie_values
       end
 
@@ -55,6 +55,10 @@ module Oath
 
       def cookies
         request.cookie_jar
+      end
+
+      def create_adapter(user)
+        Oath::Lockdown::Adapters::RememberMe.new user
       end
     end
   end

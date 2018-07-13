@@ -6,20 +6,20 @@ module Oath
           @user = user
         end
 
-        def required_fields?
+        def feature_enabled?
           user.respond_to?(:remember_token) && user.respond_to?(:remember_token_created_at)
         end
 
         # Creates a remember token and creation time.
         def remember_me!
-          return unless required_fields?
+          return unless feature_enabled?
           user.remember_token = remember_token
           user.remember_token_created_at ||= Time.current.utc
-          user.save(validate: false) if user.changed?
+          user.save(validate: false)
         end
 
         def forget_me!
-          return unless required_fields?
+          return unless feature_enabled?
           return unless user.persisted?
           user.remember_token = nil
           user.remember_token_created_at = nil
@@ -27,7 +27,7 @@ module Oath
         end
 
         def remembered?(token, generated_at)
-          return unless required_fields?
+          return unless feature_enabled?
           if generated_at.is_a?(String)
             generated_at = time_from_json(generated_at)
           end
@@ -40,7 +40,7 @@ module Oath
           # 5. the token matches
           generated_at.is_a?(Time) &&
             (Oath.config.remember_for.ago < generated_at) &&
-            (generated_at > (user.remember_token_created_at || Time.current).utc) &&
+            (generated_at.utc > (user.remember_token_created_at || Time.current).utc) &&
             compare_token(user.remember_token, token)
         end
 

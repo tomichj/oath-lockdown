@@ -1,5 +1,8 @@
 module Oath
   module Lockdown
+    #
+    # ControllerHelpers is injected into Oath's Oath::ControllerHelpers.
+    #
     module ControllerHelpers
       # Helper for use in before_actions where no authentication is required.
       #

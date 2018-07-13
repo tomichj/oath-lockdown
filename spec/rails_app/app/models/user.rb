@@ -8,6 +8,7 @@ class User < ActiveHash::Base
   field :locked_at
   field :failed_logins_count
   attr_accessor :email, :password_digest, :password
+  attr_accessor :remember_token, :remember_token_created_at
   validates :email, presence: true
 
   def self.find_by(params)

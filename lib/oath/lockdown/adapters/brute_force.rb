@@ -1,8 +1,5 @@
 module Oath
   module Lockdown
-    #
-    # Authenticate adapters wrap a user instance
-    #
     module Adapters
 
       # Detect brute force attempts and temporarily lock a user's account if needed.
@@ -12,7 +9,7 @@ module Oath
         # Receives an optional block.
         def self.valid_for_authentication?(user)
           lockable = BruteForce.new(user)
-          return yield unless lockable.feature_enabled? && lockable.required_fields?
+          return yield unless lockable.feature_enabled?
           lockable.unlock! if lockable.lock_expired?
           return true if yield && lockable.unlocked?
 
@@ -24,14 +21,14 @@ module Oath
 
         def self.locked?(user)
           lockable = BruteForce.new(user)
-          return false unless lockable.feature_enabled? && lockable.required_fields?
+          return false unless lockable.feature_enabled?
           lockable.locked?
         end
 
         # Call after a successful login.
         def self.clear_failed_logins(user)
           lockable = BruteForce.new(user)
-          return unless lockable.feature_enabled? && lockable.required_fields?
+          return unless lockable.feature_enabled?
           lockable.clear_failed_logins
         end
 
@@ -40,11 +37,10 @@ module Oath
         end
 
         def feature_enabled?
-          !max_bad_logins.nil? && max_bad_logins > 0
-        end
-
-        def required_fields?
-          user.respond_to?(:failed_logins_count) && user.respond_to?(:locked_at)
+          !max_bad_logins.nil? &&
+            max_bad_logins > 0 &&
+            user.respond_to?(:failed_logins_count) &&
+            user.respond_to?(:locked_at)
         end
 
         def clear_failed_logins

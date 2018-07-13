@@ -3,7 +3,7 @@ require 'warden'
 module Oath
   module Lockdown
     module Strategies
-      # Warden strategy to read passwords from session params.
+      # Warden strategy to handle "remember_me" authentication.
       class RememberMeStrategy < ::Warden::Strategies::Base
 
         # Checks if strategy should be executed
@@ -13,7 +13,7 @@ module Oath
           remember_cookie.present?
         end
 
-        # Authenticates for warden
+        # Authenticate via the remember_me cookie.
         def authenticate!
           user = Oath::Lockdown.serialize_from_cookie(remember_cookie)
 

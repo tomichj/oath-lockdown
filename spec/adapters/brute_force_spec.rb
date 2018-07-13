@@ -3,19 +3,15 @@ require 'oath/lockdown/adapters/brute_force'
 
 describe Oath::Lockdown::Adapters::BruteForce do
   describe '#valid?' do
-    context 'with valid user attributes' do
-      it 'is valid' do
-        user = double(locked_at: nil, failed_logins_count: 0)
-        bf_adapter = Oath::Lockdown::Adapters::BruteForce.new(user)
-        expect(bf_adapter).to be_required_fields
-      end
+    it 'false with invalid user attributes' do
+      user = double()
+      bf_adapter = Oath::Lockdown::Adapters::BruteForce.new(user)
+      expect(bf_adapter).to_not be_falsey
     end
-    context 'with invalid user attributes' do
-      it 'is valid' do
-        user = double()
-        bf_adapter = Oath::Lockdown::Adapters::BruteForce.new(user)
-        expect(bf_adapter).to_not be_required_fields
-      end
+    it 'true with valid user attributes' do
+      user = double(locked_at: nil, failed_logins_count: 0)
+      bf_adapter = Oath::Lockdown::Adapters::BruteForce.new(user)
+      expect(bf_adapter).to be_truthy
     end
   end
 

@@ -21,14 +21,10 @@ module Oath
         end
 
         def feature_enabled?
-          Oath.config.track_user
-        end
-
-        def required_fields?
+          return false unless Oath.config.track_user
           [:current_sign_in_at, :current_sign_in_ip, :last_sign_in_at, :last_sign_in_ip, :sign_in_count].each do |field|
             return false unless user.respond_to?(field)
           end
-
           true
         end
 

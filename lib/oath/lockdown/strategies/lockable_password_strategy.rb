@@ -39,7 +39,7 @@ module Oath
         end
 
         def remember_me(user)
-          Oath::Lockdown::Rememberable.new(@env['warden']).rememeber_me(user)
+          Oath::Lockdown::Rememberable.new(@env['warden']).remember_me(user)
         end
 
         def remember_me?
