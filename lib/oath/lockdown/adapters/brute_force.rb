@@ -1,39 +1,35 @@
 module Oath
   module Lockdown
     module Adapters
-
       # Detect brute force attempts and temporarily lock a user's account if needed.
       class BruteForce
+        def initialize(user)
+          @user = user
+        end
 
-        # Called from authenication strategy.
-        # Receives an optional block.
-        def self.valid_for_authentication?(user)
-          lockable = BruteForce.new(user)
-          return yield unless lockable.feature_enabled?
-          lockable.unlock! if lockable.lock_expired?
-          return true if yield && lockable.unlocked?
+        # Called from authentication strategies, will
+        #
+        # Receives an optional block (to perform the actual authorization).
+        def valid_for_authentication?
+          return yield unless feature_enabled?
 
-          lockable.register_failed_login!
-          lockable.lock! if lockable.attempts_exceeded? && lockable.unlocked?
+          unlock! if lock_expired?
+          return true if yield && unlocked?
+
+          register_failed_login!
+          lock! if attempts_exceeded? && unlocked?
           user.save(validate: false)
           false
         end
 
-        def self.locked?(user)
-          lockable = BruteForce.new(user)
-          return false unless lockable.feature_enabled?
-          lockable.locked?
+        def locked?
+          return unless feature_enabled?
+          !unlocked?
         end
 
-        # Call after a successful login.
-        def self.clear_failed_logins(user)
-          lockable = BruteForce.new(user)
-          return unless lockable.feature_enabled?
-          lockable.clear_failed_logins
-        end
-
-        def initialize(user)
-          @user = user
+        def clear_failed_logins
+          return unless feature_enabled?
+          user.update_attribute(:failed_logins_count, 0) unless user.failed_logins_count && user.failed_logins_count.to_i.zero?
         end
 
         def feature_enabled?
@@ -43,9 +39,7 @@ module Oath
             user.respond_to?(:locked_at)
         end
 
-        def clear_failed_logins
-          user.update_attribute(:failed_logins_count, 0) unless user.failed_logins_count && user.failed_logins_count.to_i.zero?
-        end
+        protected
 
         def register_failed_login!
           user.failed_logins_count ||= 0
@@ -58,10 +52,6 @@ module Oath
 
         def unlock!
           user.update_attributes(failed_logins_count: 0, locked_at: nil)
-        end
-
-        def locked?
-          !unlocked?
         end
 
         def unlocked? # check if lock is expired

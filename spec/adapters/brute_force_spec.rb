@@ -2,6 +2,10 @@ require 'spec_helper'
 require 'oath/lockdown/adapters/brute_force'
 
 describe Oath::Lockdown::Adapters::BruteForce do
+  before do
+    Oath::Lockdown::Adapters::BruteForce.send(:public, *Oath::Lockdown::Adapters::BruteForce.protected_instance_methods)
+  end
+
   describe '#valid?' do
     it 'false with invalid user attributes' do
       user = double()

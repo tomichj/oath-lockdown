@@ -84,7 +84,6 @@ module Oath
             Time.parse(value) rescue nil
           end
         end
-
       end
     end
   end

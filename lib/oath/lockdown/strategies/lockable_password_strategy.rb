@@ -35,7 +35,7 @@ module Oath
         private
 
         def locked?(user)
-          Oath::Lockdown::Adapters::BruteForce.locked?(user)
+          Oath::Lockdown::Adapters::BruteForce.new(user).locked?
         end
 
         def remember_me(user)
@@ -47,7 +47,7 @@ module Oath
         end
 
         def valid_for_auth?(user, &block)
-          Adapters::BruteForce.valid_for_authentication? user, &block
+          Oath::Lockdown::Adapters::BruteForce.new(user).valid_for_authentication? &block
         end
 
         def lookup_field_value

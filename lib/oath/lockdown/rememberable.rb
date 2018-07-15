@@ -1,7 +1,7 @@
 module Oath
   module Lockdown
     #
-    # Inflict "remember me" on a user, and set or destroy the cookie.
+    # Handle "remember me" cookies for a user.
     #
     class Rememberable
       attr_reader :warden

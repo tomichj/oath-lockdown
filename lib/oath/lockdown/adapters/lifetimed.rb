@@ -25,7 +25,7 @@ module Oath
 
         # Has the session reached its maximum allowed lifespan?
         def lifetime_exceeded?(signed_in_at)
-          !max_session_lifetime.nil? && !signed_in_at.nil? && signed_in_at <= max_session_lifetime.ago
+          feature_enabled? && !signed_in_at.nil? && signed_in_at <= max_session_lifetime.ago
         end
 
         private

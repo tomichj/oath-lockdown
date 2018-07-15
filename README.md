@@ -42,8 +42,9 @@ Now apply the migrations:
 
 ### Tweak the configuration
 
-The config parameters you'll typically want to tweak are already enumerated in 
-`app/config/initializers/oath-lockdown.rb`. Open it up and tweak the settings.
+The config parameters you want to tweak are in the initializer copied to 
+`app/config/initializers/oath-lockdown.rb`. The parameters you probably want to manipulate
+are in the initializer, but commented out. Uncomment and tweak as required.
 
 Configuration parameters are described in detail here: [Configuration](lib/oath/lockdown/configuration.rb)
 

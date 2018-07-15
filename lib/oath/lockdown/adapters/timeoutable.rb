@@ -21,7 +21,6 @@ module Oath
       #
       # = Methods
       # * timedout? - has this user timed out? @return[Boolean]
-      # * timeout_in - look up timeout period in config, @return [ActiveSupport::CoreExtensions::Numeric::Time]
       #
       class Timeoutable
         def initialize(user)
