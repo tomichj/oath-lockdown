@@ -29,12 +29,12 @@ module Oath
         end
 
         def update_tracked_fields(request)
-          old_current = current_sign_in_at
+          old_current = user.current_sign_in_at
           new_current = Time.now.utc
           user.last_sign_in_at     = old_current || new_current
           user.current_sign_in_at  = new_current
 
-          old_current = current_sign_in_ip
+          old_current = user.current_sign_in_ip
           new_current = request.remote_ip
           user.last_sign_in_ip     = old_current || new_current
           user.current_sign_in_ip  = new_current

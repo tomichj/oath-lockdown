@@ -9,6 +9,12 @@ class User < ActiveHash::Base
   field :failed_logins_count
   attr_accessor :email, :password_digest, :password
   attr_accessor :remember_token, :remember_token_created_at
+  attr_accessor :current_sign_in_at, :current_sign_in_ip, :last_sign_in_at, :last_sign_in_ip, :sign_in_count
+  # field :current_sign_in_at
+  # field :current_sign_in_ip
+  # field :last_sign_in_at
+  # field :last_sign_in_ip
+  # field :sign_in_count
   validates :email, presence: true
 
   def self.find_by(params)

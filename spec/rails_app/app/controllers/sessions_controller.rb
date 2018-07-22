@@ -5,14 +5,15 @@ class SessionsController < ApplicationController
   end
 
   def create
-    # user = authenticate_session(session_params)
-    user = warden.authenticate(:oath_lockable)
+    warden.authenticate!(:oath_lockable)
+    redirect_to posts_path, notice: 'You are signed in'
 
-    if sign_in(user)
-      redirect_to posts_path
-    else
-      redirect_to root_path, notice: "Invalid email or password"
-    end
+    # user = authenticate_session(session_params)
+    # if sign_in(user)
+    #   redirect_to posts_path
+    # else
+    #   redirect_to root_path, notice: "Invalid email or password"
+    # end
   end
 
   def destroy

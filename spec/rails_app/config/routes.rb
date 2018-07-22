@@ -14,7 +14,8 @@ RailsApp::Application.routes.draw do
   resources :users, only: [:create]
   resource :failure, only: [:show]
   # root to: "users#new"
-  root to: "posts#index"
+
+
   get "sign_in" => "sessions#new"
   post "sign_in" => "sessions#create"
   delete "sign_out" => "sessions#destroy"
@@ -22,4 +23,6 @@ RailsApp::Application.routes.draw do
   get "invalid_sign_in" => "invalid_sessions#new"
   post "invalid_sign_in" => "invalid_sessions#create"
   get "basic_auth" => "basic_auth#show"
+
+  root to: "posts#index"
 end

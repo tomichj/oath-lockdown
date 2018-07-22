@@ -12,7 +12,7 @@ describe 'User account locking', type: :feature do
         fill_in 'session[password]', with: 'wrong password'
         click_button 'go'
 
-        expect(current_path).to eq root_path
+        expect(current_path).to eq sign_in_path
       end
     end
   end

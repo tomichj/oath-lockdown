@@ -16,7 +16,7 @@ feature 'User can lock account' do
       fill_in 'session[password]', with: 'wrong password'
       click_button 'go'
 
-      expect(current_path).to eq root_path
+      expect(current_path).to eq sign_in_path
       expect(user.failed_logins_count).to eq 2
       expect(user.locked_at).to_not be_nil
     end
@@ -37,7 +37,7 @@ feature 'User can lock account' do
       fill_in 'session[password]', with: 'wrong password'
       click_button 'go'
 
-      expect(current_path).to eq root_path
+      expect(current_path).to eq sign_in_path
       expect(user.failed_logins_count).to eq 2
       expect(user.locked_at).to_not be_nil
     end
