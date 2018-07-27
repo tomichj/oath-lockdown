@@ -11,8 +11,10 @@ module Oath
     # TODO: document configuration options in readme?
     #
     class Configuration
-      # oath-lockdown's configuration options.
-      # The contents of this module will be injected into Oath::Configuration.
+      # Configutation settings for oath-lockdown.
+      # Oath::Lockdown's configuration is added to Oath::Configuration, so the user
+      # only has to mess with a single configuration block.
+      # TODO: THIS IS HACKY AND MAY CHANGE.
       module Options
         # Number of consecutive bad login attempts allowed.
         # If the user exceed sthe allowed maximum, the user's
@@ -112,6 +114,10 @@ module Oath
         # @return [String]
         attr_accessor :http_authentication_realm
 
+        # Formats a browser can navigate to.
+        # @return [String]
+        attr_accessor :navigational_formats
+
         attr_accessor :remember_me_authentication_strategy, :lockable_authentication_strategy
         attr_accessor :warden_no_input_authentication_strategies
 
@@ -119,6 +125,7 @@ module Oath
           @http_authenticatable = false
           @http_authenticatable_on_xhr = true
           @http_authentication_realm = 'Application'
+          @navigational_formats = ["*/*", :html]
         end
 
         def setup_brute_force
@@ -186,7 +193,6 @@ module Oath
         Oath::WardenSetup.class_eval do
           # Rename Oath::WardenSetup's setup_warden_strategy method, invoke it from our setup_warden_strategy.
           alias_method :setup_warden_strategies_original, :setup_warden_strategies
-          remove_method :setup_warden_strategies
 
           def setup_warden_strategies
             setup_warden_strategies_original

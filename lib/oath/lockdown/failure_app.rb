@@ -45,7 +45,7 @@ module Oath
         if request.xhr?
           Oath.config.http_authenticatable_on_xhr
         else
-          !(request_format && is_navigational_format?)
+          !Oath::Lockdown.is_navigational_format?(request)
         end
       end
 
@@ -74,14 +74,6 @@ module Oath
 
       def warden_message
         @message ||= warden.message || warden_options[:message]
-      end
-
-      def is_navigational_format?
-        ["*/*", :html].include?(request_format)
-      end
-
-      def request_format
-        @request_format ||= request.format.try(:ref)
       end
     end
   end

@@ -60,7 +60,7 @@ describe Oath::Lockdown::Adapters::BruteForce do
       end
     end
     context 'with lock_expires_at in the future' do
-      it 'is not locked' do
+      it 'is locked' do
         user = User.new locked_at: Time.current.utc + 10.minutes
         bf_adapter = Oath::Lockdown::Adapters::BruteForce.new(user)
         expect(bf_adapter.unlocked?).to be_falsey

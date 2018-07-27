@@ -20,7 +20,7 @@ module Oath
       # their name and password.
       #
       def require_no_authentication
-        # return unless is_navigational_format?
+        return unless Oath::Lockdown.is_navigational_format?(warden.request)
         if warden.authenticate?(*Oath.config.warden_no_input_authentication_strategies) && warden.user
           flash[:alert] = I18n.t("oath.lockdown.failures.already_authenticated")
           redirect_to root_path # todo make configuratble
