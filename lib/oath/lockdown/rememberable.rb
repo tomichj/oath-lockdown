@@ -7,6 +7,26 @@ module Oath
       attr_reader :warden
       delegate :request, :env, to: :warden
 
+      # Find a user based on the values from a "remember me" cookie.
+      #
+      # @return [User] if user is found
+      # @return [nil] if no user is found
+      def self.serialize_from_cookie(*args)
+        id, token, generated_at = *args
+
+        user = Oath.config.warden_serialize_from_session.call(id)
+        remember_me = Oath::Lockdown::Adapters::RememberMe.new user
+        user if user && remember_me.remembered?(token, generated_at)
+      end
+
+      # Serialize a user into values to be stored in a "remember me" cookie.
+      #
+      # @return [Array] of values to store in a cookie
+      def self.serialize_into_cookie(user)
+        id = Oath.config.warden_serialize_into_session.call(user)
+        [id, user.remember_token, Time.current.utc.to_f.to_s]
+      end
+
       def initialize(warden)
         @warden = warden
       end
@@ -40,7 +60,7 @@ module Oath
       def remember_cookie_values(user)
         options = { httponly: true }
         options.merge!(base_cookie_values)
-        options[:value] = Oath::Lockdown.serialize_into_cookie(user)
+        options[:value] = Oath::Lockdown::Rememberable.serialize_into_cookie(user)
         options[:expires] = Oath.config.remember_for.from_now
         options
       end

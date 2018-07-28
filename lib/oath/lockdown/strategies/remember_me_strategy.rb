@@ -15,7 +15,7 @@ module Oath
 
         # Authenticate via the remember_me cookie.
         def authenticate!
-          user = Oath::Lockdown.serialize_from_cookie(remember_cookie)
+          user = Oath::Lockdown::Rememberable.serialize_from_cookie(remember_cookie)
 
           if user
             success!(user)

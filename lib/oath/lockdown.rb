@@ -24,25 +24,6 @@ module Oath
     # True values used to check params
     TRUE_VALUES = [true, 1, '1', 't', 'T', 'true', 'TRUE']
 
-    # Find a user based on the vlaues from a "remember me" cookie.
-    #
-    # @return [User] if user is found
-    # @return [nil] if no user is found
-    def self.serialize_from_cookie(*args)
-      id, token, generated_at = *args
-
-      user = Oath.config.warden_serialize_from_session.call(id)
-      rememberable = Oath::Lockdown::Adapters::RememberMe.new user
-      user if user && rememberable.remembered?(token, generated_at)
-    end
-
-    # Serialize a user into values to be stored in a "remember me" cookie.
-    #
-    # @return [Array] of values to store in a cookie
-    def self.serialize_into_cookie(user)
-      id = Oath.config.warden_serialize_into_session.call(user)
-      [id, user.remember_token, Time.current.utc.to_f.to_s]
-    end
 
     # Is the request in a format that support browser navigation?
     #
