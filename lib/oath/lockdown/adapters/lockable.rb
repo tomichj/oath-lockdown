@@ -1,13 +1,17 @@
 module Oath
   module Lockdown
     module Adapters
-      # Detect brute force attempts and temporarily lock a user's account if needed.
-      class BruteForce
+      #
+      # Lockable can lock the user's account if there are too many failed logins.
+      # This adapter is used by the lockable password strategy to lock or unlock
+      # accounts.
+      #
+      class Lockable
         def initialize(user)
           @user = user
         end
 
-        # Called from authentication strategies, will
+        # Called from authentication strategies.
         #
         # Receives an optional block (to perform the actual authorization).
         def valid_for_authentication?
@@ -23,7 +27,7 @@ module Oath
         end
 
         def locked?
-          return unless feature_enabled?
+          return false unless feature_enabled?
           !unlocked?
         end
 
@@ -32,14 +36,14 @@ module Oath
           user.update_attribute(:failed_logins_count, 0) unless user.failed_logins_count && user.failed_logins_count.to_i.zero?
         end
 
+        protected
+
         def feature_enabled?
           !max_bad_logins.nil? &&
             max_bad_logins > 0 &&
             user.respond_to?(:failed_logins_count) &&
             user.respond_to?(:locked_at)
         end
-
-        protected
 
         def register_failed_login!
           user.failed_logins_count ||= 0

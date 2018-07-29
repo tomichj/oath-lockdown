@@ -1,12 +1,10 @@
 require 'oath/lockdown/adapters/lifetimed'
 
-
 Warden::Manager.after_authentication do |user, warden, options|
   next unless user
   next unless warden.authenticated?
   warden.session()['signed_in_at'] = Time.current.utc.to_i
 end
-
 
 Warden::Manager.after_set_user do |user, warden, options|
   next unless user
@@ -24,9 +22,9 @@ Warden::Manager.after_set_user do |user, warden, options|
     signed_in_at = Time.parse(signed_in_at)
   end
 
-  proxy = Oath::Lockdown::Rememberable.new(warden)
+  remember_me = Oath::Lockdown::Rememberable.new(warden)
 
-  if lifetimed.lifetime_exceeded?(signed_in_at) && !proxy.remember_me_is_active?(user)
+  if lifetimed.lifetime_exceeded?(signed_in_at) && !remember_me.remember_me_is_active?(user)
     warden.logout
     throw :warden, message: I18n.t('oath.lockdown.failures.lifetimed')
   end

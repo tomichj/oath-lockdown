@@ -1,7 +1,7 @@
 module Oath
   module Lockdown
     module Adapters
-      class RememberMe
+      class Rememberable
         def initialize(user)
           @user = user
         end

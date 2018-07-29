@@ -8,7 +8,7 @@ RSpec.describe Oath::Lockdown do
   describe '#serialize_into_cookie' do
     it 'emits cookie values' do
       user = User.create email: 'gug@gug.gug'
-      Oath::Lockdown::Adapters::RememberMe.new(user).remember_me!
+      Oath::Lockdown::Adapters::Rememberable.new(user).remember_me!
       id, token, date = Oath::Lockdown::Rememberable.serialize_into_cookie(user)
       expect(id).to eq user.id
       expect(token).to be_instance_of String

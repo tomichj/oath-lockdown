@@ -3,7 +3,8 @@ require 'warden'
 module Oath
   module Lockdown
     module Strategies
-      # Warden strategy to read passwords from session params.
+      # Warden strategy that supports locking user accounts if too many invalid
+      # login attempts are made.
       class LockablePasswordStrategy < ::Warden::Strategies::Base
 
         # Checks if strategy should be executed
@@ -34,8 +35,16 @@ module Oath
 
         private
 
+        def valid_for_auth?(user, &block)
+          lockable(user).valid_for_authentication? &block
+        end
+
         def locked?(user)
-          Oath::Lockdown::Adapters::BruteForce.new(user).locked?
+          lockable(user).locked?
+        end
+
+        def lockable(user)
+          @lockable ||= Oath::Lockdown::Adapters::Lockable.new(user)
         end
 
         def remember_me(user)
@@ -44,10 +53,6 @@ module Oath
 
         def remember_me?
           Oath::Lockdown::TRUE_VALUES.include? session_params[:remember_me]
-        end
-
-        def valid_for_auth?(user, &block)
-          Oath::Lockdown::Adapters::BruteForce.new(user).valid_for_authentication? &block
         end
 
         def lookup_field_value

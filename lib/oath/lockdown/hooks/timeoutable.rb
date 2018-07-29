@@ -22,9 +22,9 @@ Warden::Manager.after_set_user do |user, warden, options|
     last_request_at = Time.parse(last_request_at)
   end
 
-  proxy = Oath::Lockdown::Rememberable.new warden
+  remember_me = Oath::Lockdown::Rememberable.new warden
 
-  if timeoutable.timedout?(last_request_at) && !proxy.remember_me_is_active?(user)
+  if timeoutable.timedout?(last_request_at) && !remember_me.remember_me_is_active?(user)
     warden.logout
     throw :warden, message: I18n.t('oath.lockdown.failures.timeout')
   end
