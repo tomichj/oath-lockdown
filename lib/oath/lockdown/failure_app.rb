@@ -7,7 +7,6 @@ module Oath
       include ActionController::Redirecting
 
       include Rails.application.routes.url_helpers
-      # include Rails.application.routes.mounted_helpers
 
       delegate :flash, to: :request
 
@@ -19,10 +18,14 @@ module Oath
       def respond
         if http_auth?
           http_auth
+        elsif warden_options[:recall]
+          recall
         else
           redirect
         end
       end
+
+      private
 
       def http_auth
         self.status = 401
@@ -31,7 +34,46 @@ module Oath
         self.response_body = http_auth_body
       end
 
-      private
+      def recall
+        recall_get_header_info.each do |var, value|
+          recall_set_header(value, var)
+        end
+
+        if Oath::Lockdown.is_navigational_format?(request)
+          flash.now[:alert] = I18n.t('oath.lockdown.failures.could_not_log_in')
+        end
+
+        self.response = recall_app(warden_options[:recall]).call(request.env)
+      end
+
+      def recall_set_header(value, var)
+        if request.respond_to?(:set_header)
+          request.set_header(var, value)
+        else
+          env[var] = value
+        end
+      end
+
+      def recall_get_header_info
+        config = Rails.application.config
+
+        if config.try(:relative_url_root)
+          base_path = Pathname.new(config.relative_url_root)
+          full_path = Pathname.new(attempted_path)
+
+          { "SCRIPT_NAME" => config.relative_url_root,
+            "PATH_INFO"   => '/' + full_path.relative_path_from(base_path).to_s }
+        else
+          { "PATH_INFO" => attempted_path }
+        end
+      end
+
+      def recall_app(app)
+        controller, action = app.split("#")
+        controller_name  = ActiveSupport::Inflector.camelize(controller)
+        controller_klass = ActiveSupport::Inflector.constantize("#{controller_name}Controller")
+        controller_klass.action(action)
+      end
 
       # Choose whether we should respond in a http authentication fashion,
       # including 401 and optional headers.
@@ -74,6 +116,10 @@ module Oath
 
       def warden_message
         @message ||= warden.message || warden_options[:message]
+      end
+
+      def attempted_path
+        warden_options[:attempted_path]
       end
     end
   end
