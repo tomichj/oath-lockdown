@@ -1,8 +1,7 @@
 class SessionsController < ApplicationController
   before_action :require_no_authentication, only: [:new, :create]
 
-  def new
-  end
+  def new; end
 
   def create
     warden.authenticate!(:oath_lockable)
@@ -21,4 +20,3 @@ class SessionsController < ApplicationController
     redirect_to root_path
   end
 end
-

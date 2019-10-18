@@ -1,7 +1,7 @@
 class BasicAuthController < ApplicationController
-  http_basic_authenticate_with name: "admin", password: 'password'
+  http_basic_authenticate_with name: 'admin', password: 'password'
 
   def show
-    render plain: "Hello"
+    render plain: 'Hello'
   end
 end

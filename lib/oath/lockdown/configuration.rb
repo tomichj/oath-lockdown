@@ -11,7 +11,7 @@ module Oath
     # TODO: document configuration options in readme?
     #
     class Configuration
-      # Configutation settings for oath-lockdown.
+      # Configuration settings for oath-lockdown.
       # Oath::Lockdown's configuration is added to Oath::Configuration, so the user
       # only has to mess with a single configuration block.
       # TODO: THIS IS HACKY AND MAY CHANGE.
@@ -125,7 +125,7 @@ module Oath
           @http_authenticatable = false
           @http_authenticatable_on_xhr = true
           @http_authentication_realm = 'Application'
-          @navigational_formats = ["*/*", :html]
+          @navigational_formats = ['*/*', :html]
         end
 
         def setup_brute_force
@@ -165,7 +165,6 @@ module Oath
           @expire_remember_me_on_sign_out = true
         end
       end
-
 
       # Inject oath-lockdown's configuration into oath's configuration class.
       def self.inject_into_oath

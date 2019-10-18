@@ -3,14 +3,18 @@ require 'generators/oath/lockdown/migration/version'
 
 module Oath
   module Lockdown
+    #
+    # Install oath-lockdown.
+    #
     class InstallGenerator < Rails::Generators::Base
       include Rails::Generators::Migration
       include Oath::Lockdown::Generators::Migration
 
-      source_root File.expand_path("../../templates", __FILE__)
+      # source_root File.expand_path('../../templates', __FILE__)
+      expand_path('../templates', __dir__)
 
       def add_initializer
-        template 'config/initializers/oath-lockdown.rb'
+        template 'config/initializers/oath_lockdown.rb'
       end
 
       def add_model_migrations

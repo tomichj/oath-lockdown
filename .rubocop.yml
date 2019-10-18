@@ -1,4 +1,35 @@
 #inherit_from: ../.rubocop.yml
 #
+
+Lint/PercentSymbolArray:
+  Exclude: ['spec/rails_app/app/controllers/sessions_controller.rb']
+
+AllCops:
+  Exclude: ['lib/generators/oath/lockdown/templates/db/migrate/**/*']
+
+Metrics/AbcSize:
+  Exclude: ['lib/oath/lockdown/strategies/lockable_password_strategy.rb',
+            'lib/oath/lockdown/configuration.rb',
+            'lib/oath/lockdown/adapters/trackable.rb']
+
+Metrics/BlockLength:
+  Exclude: ['spec/**/*']
+
 Metrics/LineLength:
   Max: 120
+  Exclude: ['spec/rails_app/config/initializers/secret_token.rb']
+
+Metrics/MethodLength:
+  Exclude: ['lib/oath/lockdown/configuration.rb']
+
+Style/FrozenStringLiteralComment:
+  Exclude: ['**/*']
+
+Style/GuardClause:
+  Exclude: ['lib/oath/lockdown/controller_helpers.rb']
+
+Style/SymbolArray:
+  Exclude: ['**/*']
+
+Style/RescueModifier:
+  Exclude: ['**/*']

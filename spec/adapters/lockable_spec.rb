@@ -8,7 +8,7 @@ describe Oath::Lockdown::Adapters::Lockable do
 
   describe '#valid?' do
     it 'false with invalid user attributes' do
-      user = double()
+      user = double
       bf_adapter = Oath::Lockdown::Adapters::Lockable.new(user)
       expect(bf_adapter).to_not be_falsey
     end

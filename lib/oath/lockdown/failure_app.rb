@@ -2,6 +2,7 @@ require 'action_controller/metal'
 
 module Oath
   module Lockdown
+    # Basic failure app that handles multiple authentication types.
     class FailureApp < ActionController::Metal
       include ActionController::UrlFor
       include ActionController::Redirecting
@@ -29,7 +30,7 @@ module Oath
 
       def http_auth
         self.status = 401
-        self.headers['WWW-Authenticate'] = 'Basic realm="Application"' if http_auth_header?
+        headers['WWW-Authenticate'] = 'Basic realm="Application"' if http_auth_header?
         self.content_type = request.format.to_s
         self.response_body = http_auth_body
       end
@@ -39,7 +40,7 @@ module Oath
           recall_set_header(value, var)
         end
 
-        if Oath::Lockdown.is_navigational_format?(request)
+        if Oath::Lockdown.navigational_format?(request)
           flash.now[:alert] = I18n.t('oath.lockdown.failures.could_not_log_in')
         end
 
@@ -61,16 +62,16 @@ module Oath
           base_path = Pathname.new(config.relative_url_root)
           full_path = Pathname.new(attempted_path)
 
-          { "SCRIPT_NAME" => config.relative_url_root,
-            "PATH_INFO"   => '/' + full_path.relative_path_from(base_path).to_s }
+          { 'SCRIPT_NAME' => config.relative_url_root,
+            'PATH_INFO' => '/' + full_path.relative_path_from(base_path).to_s }
         else
-          { "PATH_INFO" => attempted_path }
+          { 'PATH_INFO' => attempted_path }
         end
       end
 
       def recall_app(app)
-        controller, action = app.split("#")
-        controller_name  = ActiveSupport::Inflector.camelize(controller)
+        controller, action = app.split('#')
+        controller_name = ActiveSupport::Inflector.camelize(controller)
         controller_klass = ActiveSupport::Inflector.constantize("#{controller_name}Controller")
         controller_klass.action(action)
       end
@@ -87,7 +88,7 @@ module Oath
         if request.xhr?
           Oath.config.http_authenticatable_on_xhr
         else
-          !Oath::Lockdown.is_navigational_format?(request)
+          !Oath::Lockdown.navigational_format?(request)
         end
       end
 
@@ -115,7 +116,7 @@ module Oath
       end
 
       def warden_message
-        @message ||= warden.message || warden_options[:message]
+        @warden_message ||= warden.message || warden_options[:message]
       end
 
       def attempted_path

@@ -20,29 +20,35 @@ module Oath
           unlock! if lock_expired?
           return true if yield && unlocked?
 
-          register_failed_login!
-          lock! if attempts_exceeded? && unlocked?
-          user.save(validate: false)
+          failed_login!
           false
         end
 
         def locked?
           return false unless feature_enabled?
+
           !unlocked?
         end
 
         def clear_failed_logins
           return unless feature_enabled?
-          user.update_attribute(:failed_logins_count, 0) unless user.failed_logins_count && user.failed_logins_count.to_i.zero?
+
+          user.update_attribute(:failed_logins_count, 0) unless user.failed_logins_count&.to_i&.zero?
         end
 
         protected
 
         def feature_enabled?
           !max_bad_logins.nil? &&
-            max_bad_logins > 0 &&
+            max_bad_logins.positive? &&
             user.respond_to?(:failed_logins_count) &&
             user.respond_to?(:locked_at)
+        end
+
+        def failed_login!
+          register_failed_login!
+          lock! if attempts_exceeded? && unlocked?
+          user.save(validate: false)
         end
 
         def register_failed_login!
@@ -58,12 +64,14 @@ module Oath
           user.update_attributes(failed_logins_count: 0, locked_at: nil)
         end
 
-        def unlocked? # check if lock is expired
+        # not locked at all, or was locked but lock is expired
+        def unlocked?
           user.locked_at.nil? || lock_expired?
         end
 
         def lock_expired?
           return false unless lockout_period
+
           user.locked_at && user.locked_at < (Time.current.utc - lockout_period)
         end
 

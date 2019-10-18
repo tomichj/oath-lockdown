@@ -1,6 +1,7 @@
 module Oath
   module Lockdown
     module Adapters
+      # Support "Remember Me" functionality.
       class Rememberable
         def initialize(user)
           @user = user
@@ -13,6 +14,7 @@ module Oath
         # Creates a remember token and creation time.
         def remember_me!
           return unless feature_enabled?
+
           user.remember_token = remember_token
           user.remember_token_created_at ||= Time.current.utc
           user.save(validate: false)
@@ -21,6 +23,7 @@ module Oath
         def forget_me!
           return unless feature_enabled?
           return unless user.persisted?
+
           user.remember_token = nil
           user.remember_token_created_at = nil
           user.save(validate: false)
@@ -28,20 +31,23 @@ module Oath
 
         def remembered?(token, generated_at)
           return unless feature_enabled?
-          if generated_at.is_a?(String)
-            generated_at = time_from_json(generated_at)
-          end
+
+          generated_at = time_from_json(generated_at) if generated_at.is_a?(String)
 
           # The token is only valid if:
           # 1. we have a date
           # 2. the current time does not pass the expiry period
           # 3. the record has a remember_created_at date
-          # 4. the token date is bigger than the remember_created_at
+          # 4. the token date is bigger than the remember_token_created_at
           # 5. the token matches
           generated_at.is_a?(Time) &&
-            (Oath.config.remember_for.ago < generated_at) &&
-            (generated_at.utc > (user.remember_token_created_at || Time.current).utc) &&
+            within_remember_time_limit(generated_at) &&
+            gug(generated_at) &&
             compare_token(user.remember_token, token)
+          # generated_at.is_a?(Time) &&
+          #   (Oath.config.remember_for.ago < generated_at) &&
+          #   (generated_at.utc > (user.remember_token_created_at || Time.current).utc) &&
+          #   compare_token(user.remember_token, token)
         end
 
         protected
@@ -64,18 +70,26 @@ module Oath
         end
 
         # constant-time comparison algorithm to prevent timing attacks
-        def compare_token(a, b)
-          return false if a.blank? || b.blank? || a.bytesize != b.bytesize
-          l = a.unpack "C#{a.bytesize}"
+        def compare_token(first, second)
+          return false if first.blank? || second.blank? || first.bytesize != second.bytesize
 
+          l = first.unpack "C#{first.bytesize}"
           res = 0
-          b.each_byte { |byte| res |= byte ^ l.shift }
+          second.each_byte { |byte| res |= byte ^ l.shift }
           res.zero?
         end
 
         private
 
         attr_reader :user
+
+        def within_remember_time_limit(generated_at)
+          Oath.config.remember_for.ago < generated_at
+        end
+
+        def gug(generated_at)
+          generated_at.utc > (user.remember_token_created_at || Time.current).utc
+        end
 
         def time_from_json(value)
           if value =~ /\A\d+\.\d+\Z/

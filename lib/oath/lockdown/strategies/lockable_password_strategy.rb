@@ -4,16 +4,15 @@ module Oath
   module Lockdown
     module Strategies
       # Warden strategy that supports locking user accounts if too many invalid
-      # login attempts are made.
+      # login attempts are made. Will set remember_me.
       class LockablePasswordStrategy < ::Warden::Strategies::Base
-
         # Checks if strategy should be executed
         # @return [Boolean]
         def valid?
           lookup_field_value || token_field_value
         end
 
-        # Authenticates for warden
+        # Authenticates for warden.
         def authenticate!
           user = Oath.config.user_class.find_by(lookup_field => lookup_field_value)
           auth = Oath.config.authentication_service.new(user, token_field_value)
@@ -36,7 +35,7 @@ module Oath
         private
 
         def valid_for_auth?(user, &block)
-          lockable(user).valid_for_authentication? &block
+          lockable(user).valid_for_authentication?(&block)
         end
 
         def locked?(user)

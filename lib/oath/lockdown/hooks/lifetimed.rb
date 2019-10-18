@@ -1,19 +1,20 @@
 require 'oath/lockdown/adapters/lifetimed'
 
-Warden::Manager.after_authentication do |user, warden, options|
+Warden::Manager.after_authentication do |user, warden, _options|
   next unless user
   next unless warden.authenticated?
-  warden.session()['signed_in_at'] = Time.current.utc.to_i
+
+  warden.session['signed_in_at'] = Time.current.utc.to_i
 end
 
-Warden::Manager.after_set_user do |user, warden, options|
+Warden::Manager.after_set_user do |user, warden, _options|
   next unless user
   next unless warden.authenticated?
 
   lifetimed = Oath::Lockdown::Adapters::Lifetimed.new(user)
   next unless lifetimed.feature_enabled?
 
-  signed_in_at = warden.session()['signed_in_at']
+  signed_in_at = warden.session['signed_in_at']
   next unless signed_in_at
 
   if signed_in_at.is_a? Integer

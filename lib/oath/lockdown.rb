@@ -15,6 +15,9 @@ require 'oath/lockdown/controller_helpers'
 require 'oath/lockdown/rememberable'
 
 module Oath
+  #
+  # Set up when Oath:Lockdown when the module is required.
+  #
   module Lockdown
     autoload :FailureApp, 'oath/lockdown/failure_app'
 
@@ -22,16 +25,14 @@ module Oath
     Oath::Lockdown::Configuration.inject_into_oath
 
     # True values used to check params
-    TRUE_VALUES = [true, 1, '1', 't', 'T', 'true', 'TRUE']
-
+    TRUE_VALUES = [true, 1, '1', 't', 'T', 'true', 'TRUE'].freeze
 
     # Is the request in a format that support browser navigation?
     #
     # @return [Boolean] true if request is in a navigable format.
-    def self.is_navigational_format?(request)
+    def self.navigational_format?(request)
       request_format ||= request.format.try(:ref)
       Oath.config.navigational_formats.include?(request_format)
     end
-
   end
 end

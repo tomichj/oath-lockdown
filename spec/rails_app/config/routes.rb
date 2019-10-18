@@ -15,14 +15,13 @@ RailsApp::Application.routes.draw do
   resource :failure, only: [:show]
   # root to: "users#new"
 
+  get 'sign_in' => 'sessions#new'
+  post 'sign_in' => 'sessions#create'
+  delete 'sign_out' => 'sessions#destroy'
+  get 'sign_up' => 'users#new'
+  get 'invalid_sign_in' => 'invalid_sessions#new'
+  post 'invalid_sign_in' => 'invalid_sessions#create'
+  get 'basic_auth' => 'basic_auth#show'
 
-  get "sign_in" => "sessions#new"
-  post "sign_in" => "sessions#create"
-  delete "sign_out" => "sessions#destroy"
-  get "sign_up" => "users#new"
-  get "invalid_sign_in" => "invalid_sessions#new"
-  post "invalid_sign_in" => "invalid_sessions#create"
-  get "basic_auth" => "basic_auth#show"
-
-  root to: "posts#index"
+  root to: 'posts#index'
 end

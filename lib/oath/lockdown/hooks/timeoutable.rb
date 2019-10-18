@@ -8,14 +8,14 @@ require 'oath/lockdown/adapters/timeoutable'
 #
 # Finally, each time the request comes and the user is set, we set the last request time
 # inside its session to verify timeout in the following request.
-Warden::Manager.after_set_user do |user, warden, options|
+Warden::Manager.after_set_user do |user, warden, _options|
   next unless user
   next unless warden.authenticated?
 
   timeoutable = Oath::Lockdown::Adapters::Timeoutable.new(user)
   next unless timeoutable.feature_enabled?
 
-  last_request_at = warden.session()['last_request_at']
+  last_request_at = warden.session['last_request_at']
   if last_request_at.is_a? Integer
     last_request_at = Time.at(last_request_at).utc
   elsif last_request_at.is_a? String
@@ -29,5 +29,5 @@ Warden::Manager.after_set_user do |user, warden, options|
     throw :warden, message: I18n.t('oath.lockdown.failures.timeout')
   end
 
-  warden.session()['last_request_at'] = Time.current.utc.to_i
+  warden.session['last_request_at'] = Time.current.utc.to_i
 end

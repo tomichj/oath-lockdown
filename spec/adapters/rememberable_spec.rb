@@ -3,7 +3,8 @@ require 'oath/lockdown/adapters/rememberable'
 
 describe Oath::Lockdown::Adapters::Rememberable do
   before do
-    Oath::Lockdown::Adapters::Rememberable.send(:public, *Oath::Lockdown::Adapters::Rememberable.protected_instance_methods)
+    Oath::Lockdown::Adapters::Rememberable.send(:public,
+                                                *Oath::Lockdown::Adapters::Rememberable.protected_instance_methods)
   end
 
   describe '#remember_me!' do
@@ -67,12 +68,12 @@ describe Oath::Lockdown::Adapters::Rememberable do
   describe '#compare_token' do
     it 'should complain when comparing empty or different sized passes' do
       rememberable = Oath::Lockdown::Adapters::Rememberable.new double
-      [nil, ""].each do |empty|
-        expect(rememberable.compare_token(empty, "something")).to be_falsey
-        expect(rememberable.compare_token("something", empty)).to be_falsey
+      [nil, ''].each do |empty|
+        expect(rememberable.compare_token(empty, 'something')).to be_falsey
+        expect(rememberable.compare_token('something', empty)).to be_falsey
         expect(rememberable.compare_token(empty, empty)).to be_falsey
       end
-      expect(rememberable.compare_token("size_1", "size_four")).to be_falsey
+      expect(rememberable.compare_token('size_1', 'size_four')).to be_falsey
     end
   end
 end

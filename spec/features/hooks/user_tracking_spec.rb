@@ -19,7 +19,7 @@ describe 'User tracking', type: :feature do
   it 'increments sign in count for subsequent logins' do
     sign_user_in
     sign_user_out
-    expect{ do_sign_in_screen }.to change {@user.sign_in_count}.by 1
+    expect { do_sign_in_screen }.to change { @user.sign_in_count }.by 1
   end
 
   it 'sets sign in time' do

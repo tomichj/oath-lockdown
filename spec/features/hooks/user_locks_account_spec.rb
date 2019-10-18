@@ -4,7 +4,7 @@ feature 'User can lock account' do
   scenario 'with nil failed_logins_count' do
     with_oath_config(max_consecutive_bad_logins_allowed: 1, bad_login_lockout_period: 10.minute) do
       user = User.create!(email: 'example@example.com', password_digest: 'password',
-                   locked_at: nil, failed_logins_count: nil)
+                          locked_at: nil, failed_logins_count: nil)
 
       visit sign_in_path
       fill_in 'session[email]', with: 'example@example.com'

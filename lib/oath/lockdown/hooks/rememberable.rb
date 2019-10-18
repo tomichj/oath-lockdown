@@ -2,6 +2,6 @@
 # to forget_me! Also clear remember token to ensure the user won't be
 # remembered again. Notice that we forget the user unless the record is not persisted.
 # This avoids forgetting deleted users.
-Warden::Manager.before_logout do |record, warden, options|
+Warden::Manager.before_logout do |record, warden, _options|
   Oath::Lockdown::Rememberable.new(warden).forget_me(record)
 end

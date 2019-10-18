@@ -1,7 +1,7 @@
 require 'oath/lockdown/adapters/trackable'
 
 # Update all standard tracked stats after each authentication.
-Warden::Manager.after_set_user except: :fetch do |user, warden, options|
+Warden::Manager.after_set_user except: :fetch do |user, warden, _options|
   next unless user
   next unless warden.authenticated?
 

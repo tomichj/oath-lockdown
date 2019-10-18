@@ -1,6 +1,5 @@
 class PostsController < ApplicationController
   before_filter :require_login
 
-  def index
-  end
+  def index; end
 end

@@ -6,7 +6,6 @@ module Oath
       # Warden strategy to handle "remember_me" authentication.
       # Does not set the remember me cookie, just reads it.
       class RememberMeStrategy < ::Warden::Strategies::Base
-
         # Checks if strategy should be executed
         # @return [Boolean]
         def valid?
